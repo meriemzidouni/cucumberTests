@@ -10,20 +10,32 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import org.openqa.selenium.firefox.FirefoxDriver;
 
 public class StepDefinitions {
     
 	WebDriver driver;
 
 
-	@Before
-    public void openBrowser() {
-        driver = new ChromeDriver();
+    @Given("I open {string}")
+    public void i_open(String string) {
+        if (string == null){
+            driver = new ChromeDriver();
+        }
+        else if (string == "chrome") {
+            driver = new ChromeDriver();
+        }
+        else if (string == "firefox") {
+            driver = new FirefoxDriver();
+        }
+        else {
+            driver = new ChromeDriver();
+        }
         driver.manage().window().maximize();
     }
 
 
-    @Given("I open wikipedia")
+   @Given("I open wikipedia")
     public void i_open_wikipedia() {
        driver.get("https://en.wikipedia.org/wiki/Main_Page");
     }
@@ -35,14 +47,17 @@ public class StepDefinitions {
         barreRecherche.sendKeys(Keys.ENTER);
     }
 
-    @Then("I should see {string} in the title")
-    public void i_should_see_in_the_title(String string) {
+
+
+    @Then("I should see {string}")
+    public void i_should_see(String string) {
         WebElement title = driver.findElement(By.id("firstHeading"));
         String result = title.getText();
         Assert.assertEquals(result, string);
     }
 
-   @After
+
+    @After
     public void closeBrowser() {
 	    driver.quit();
     }
